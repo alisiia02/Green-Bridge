@@ -231,21 +231,48 @@ runs out at exactly the moment the banner leaves the viewport. **Change one and 
 change the other**, or the image either sticks early or shows a gap at the top. The hook
 returns `0` under `prefers-reduced-motion`.
 
+### Logo
+
+Two files, one component:
+
+| Form | File | Used in |
+| --- | --- | --- |
+| Wordmark inside the arch | `assets/logo-wordmark.svg` (88 KB) | Hero — it *is* the `<h1>` |
+| Bare arch | `assets/logo-mark.svg` (6 KB) | Header |
+
+The artwork is dark green with no light variant, so `light` inverts it to white via a CSS
+filter for use over photographs. The filter transitions, so the header mark does not pop
+when the background arrives.
+
+The wordmark is 88 KB because the lettering is outlined paths. That is fine for one hero
+image; don't reach for it anywhere it would load repeatedly.
+
 ### NavBar
 
-No fill of its own. Two modes, chosen by route in `Layout`:
+Carries no fill at the top of a page, and takes one on once scrolled — past the hero there
+is nothing behind it, and content would otherwise run through the links. Two modes, chosen
+by route in `Layout`:
 
-| Mode | Used on | Appearance |
-| --- | --- | --- |
-| `overlay` | Pages opening on a hero (`/`) | Lies over the banner, white text |
-| default | Everything else | In normal flow, dark text on the page background |
+| Mode | Used on | Position | At top | Scrolled |
+| --- | --- | --- | --- | --- |
+| `overlay` | Pages opening on a hero (`/`) | `fixed` | Transparent, white text, mark hidden | Fill, dark text, mark shown |
+| default | Everything else | `sticky` | Transparent, dark text | Fill, dark text |
 
-Because it has no background, the header **cannot be sticky** — content would scroll
-through the links. Hero banners are sized to account for the header lying over them.
+Layout is `grid-cols-[1fr_auto_1fr]` — links left, **logo centred**, links and menu button
+right. `NAV_LINKS` is split at its midpoint, so a fourth link lands on the left. The active
+link is underlined rather than filled, since there is often no fill for a pill to sit on.
 
-Links are centred via `grid-cols-[auto_1fr_auto]` (logo, links, menu button), so they stay
-centred on the page regardless of how wide the logo gets. The active link is underlined
-rather than filled, since there is no fill for a pill to sit on.
+### Logo handoff
+
+Scrolling the home page shrinks the hero logo and fades the header mark in over the same
+distance, so the big logo appears to travel up into the header. The two are different
+artwork, so this is a cross-fade, not a morph — both being horizontally centred is what
+sells it.
+
+Both components read `LOGO_HANDOFF_DISTANCE` from `constants/motion.ts`. **Keep them on the
+same constant**: if they disagree, one half finishes before the other starts and the
+illusion breaks. The hero's shrink is skipped under `prefers-reduced-motion`, but the
+cross-fade still runs, so the header mark always ends up visible.
 
 `SplitRow` is image one side, text the other, with a `reverse` prop to alternate. Two of
 these carry more weight than six small cards and give the eye somewhere to rest.

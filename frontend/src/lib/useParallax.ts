@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useReducedMotion } from './useReducedMotion'
 
 /**
  * Parallax offset for a banner image, in pixels.
@@ -17,13 +18,16 @@ import { useEffect, useRef, useState } from 'react'
 export function useParallax<T extends HTMLElement = HTMLDivElement>(strength = 0.3) {
   const ref = useRef<T>(null)
   const [offset, setOffset] = useState(0)
+  const reducedMotion = useReducedMotion()
 
   useEffect(() => {
     const element = ref.current
     if (!element) return
 
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
-    if (reducedMotion.matches) return
+    if (reducedMotion) {
+      setOffset(0)
+      return
+    }
 
     let frame = 0
 
@@ -50,7 +54,7 @@ export function useParallax<T extends HTMLElement = HTMLDivElement>(strength = 0
       window.removeEventListener('resize', onScroll)
       if (frame) window.cancelAnimationFrame(frame)
     }
-  }, [strength])
+  }, [strength, reducedMotion])
 
   return { ref, offset }
 }
