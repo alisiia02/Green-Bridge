@@ -225,6 +225,28 @@ panel around it. Legibility comes from a flat scrim (`bg-green-900/45`, a solid 
 partial opacity, not a gradient) plus white text. Buttons over it use the `outline-light`
 variant; the standard `outline` disappears against a photograph. One per site, home only.
 
+The image drifts on scroll via `useParallax`. The strength and the layer's size are a
+matched pair: strength `0.3` needs a layer `160%` tall starting at `-30%`, so the overscan
+runs out at exactly the moment the banner leaves the viewport. **Change one and you must
+change the other**, or the image either sticks early or shows a gap at the top. The hook
+returns `0` under `prefers-reduced-motion`.
+
+### NavBar
+
+No fill of its own. Two modes, chosen by route in `Layout`:
+
+| Mode | Used on | Appearance |
+| --- | --- | --- |
+| `overlay` | Pages opening on a hero (`/`) | Lies over the banner, white text |
+| default | Everything else | In normal flow, dark text on the page background |
+
+Because it has no background, the header **cannot be sticky** — content would scroll
+through the links. Hero banners are sized to account for the header lying over them.
+
+Links are centred via `grid-cols-[auto_1fr_auto]` (logo, links, menu button), so they stay
+centred on the page regardless of how wide the logo gets. The active link is underlined
+rather than filled, since there is no fill for a pill to sit on.
+
 `SplitRow` is image one side, text the other, with a `reverse` prop to alternate. Two of
 these carry more weight than six small cards and give the eye somewhere to rest.
 

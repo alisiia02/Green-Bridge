@@ -5,26 +5,51 @@ import { SITE } from '@/constants/site'
 import { cn } from '@/lib/cn'
 import { PageContainer } from './PageContainer'
 
-export function NavBar() {
+interface NavBarProps {
+  /**
+   * Lay the header over the page instead of above it, with light text.
+   * For pages that open on a hero image; without one there is nothing to read against.
+   */
+  overlay?: boolean
+}
+
+/**
+ * Site header. No fill of its own - on hero pages it sits over the image, elsewhere it
+ * shows the page background through it. That means it cannot be sticky: with nothing
+ * behind it, content would scroll through the links.
+ */
+export function NavBar({ overlay = false }: NavBarProps) {
   const [open, setOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-40 border-b border-neutral-200 bg-neutral-50/95 backdrop-blur">
+    <header
+      className={cn(
+        'z-40 w-full',
+        overlay ? 'absolute inset-x-0 top-0' : 'relative',
+      )}
+    >
       <PageContainer>
-        <nav className="flex h-16 items-center justify-between gap-4">
+        <nav className="grid h-20 grid-cols-[auto_1fr_auto] items-center gap-4">
           <Link
             to="/"
-            className="flex items-center gap-2.5 rounded-md text-lg font-semibold text-green-900"
             onClick={() => setOpen(false)}
+            className={cn(
+              'flex items-center gap-2.5 rounded-md text-lg font-semibold',
+              overlay ? 'text-white' : 'text-green-900',
+            )}
           >
-            <BridgeMark />
+            <BridgeMark className={overlay ? 'text-green-200' : 'text-green-500'} />
             {SITE.name}
           </Link>
 
-          <ul className="hidden items-center gap-1 sm:flex">
+          <ul className="hidden items-center justify-center gap-9 sm:flex">
             {NAV_LINKS.map((link) => (
               <li key={link.path}>
-                <NavLink to={link.path} end={link.path === '/'} className={navLinkClasses}>
+                <NavLink
+                  to={link.path}
+                  end={link.path === '/'}
+                  className={({ isActive }) => navLinkClasses(isActive, overlay)}
+                >
                   {link.label}
                 </NavLink>
               </li>
@@ -36,21 +61,29 @@ export function NavBar() {
             aria-expanded={open}
             aria-label="Toggle navigation"
             onClick={() => setOpen((value) => !value)}
-            className="rounded-md p-2 text-green-700 transition-colors hover:bg-green-50 sm:hidden"
+            className={cn(
+              'col-start-3 justify-self-end rounded-md p-2 transition-colors sm:hidden',
+              overlay ? 'text-white hover:bg-white/15' : 'text-green-700 hover:bg-green-50',
+            )}
           >
             <MenuIcon open={open} />
           </button>
         </nav>
 
         {open && (
-          <ul className="flex flex-col gap-1 pb-4 sm:hidden">
+          <ul className="mb-4 flex flex-col gap-1 rounded-lg border border-white/70 bg-white/90 p-3 backdrop-blur-md sm:hidden">
             {NAV_LINKS.map((link) => (
               <li key={link.path}>
                 <NavLink
                   to={link.path}
                   end={link.path === '/'}
                   onClick={() => setOpen(false)}
-                  className={({ isActive }) => cn(navLinkClasses({ isActive }), 'block')}
+                  className={({ isActive }) =>
+                    cn(
+                      'block rounded-sm px-3 py-2 text-sm font-medium transition-colors',
+                      isActive ? 'text-green-800' : 'text-neutral-600 hover:text-green-700',
+                    )
+                  }
                 >
                   {link.label}
                 </NavLink>
@@ -63,19 +96,27 @@ export function NavBar() {
   )
 }
 
-function navLinkClasses({ isActive }: { isActive: boolean }) {
+/** Active state is an underline rather than a filled pill - there is no fill to sit on. */
+function navLinkClasses(isActive: boolean, overlay: boolean) {
   return cn(
-    'rounded-full px-4 py-2 text-sm font-medium transition-colors',
-    isActive ? 'bg-green-100 text-green-800' : 'text-neutral-600 hover:bg-green-50 hover:text-green-700',
+    'rounded-sm text-sm transition-colors',
+    isActive && 'font-semibold underline decoration-2 underline-offset-8',
+    overlay
+      ? isActive
+        ? 'text-white decoration-green-200'
+        : 'font-medium text-white/80 hover:text-white'
+      : isActive
+        ? 'text-green-900 decoration-green-500'
+        : 'font-medium text-neutral-600 hover:text-green-700',
   )
 }
 
-function BridgeMark() {
+function BridgeMark({ className }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 32 32"
       aria-hidden="true"
-      className="h-7 w-7 text-green-500"
+      className={cn('h-7 w-7', className)}
       fill="none"
       stroke="currentColor"
       strokeWidth="2"
