@@ -8,6 +8,7 @@ import { FeatureItem } from '@/components/ui/FeatureItem'
 import { Section } from '@/components/ui/Section'
 import { BookIcon, ChartIcon, ClockIcon, CoinIcon } from '@/components/ui/icons'
 import { SITE } from '@/constants/site'
+import heroImage from '@/assets/Yamanashi902_1.jpeg'
 
 const QUALITIES = [
   {
@@ -35,7 +36,8 @@ export function Home() {
         eyebrow={SITE.programme}
         title={SITE.name}
         description={SITE.intro}
-        imageLabel="Header image"
+        image={heroImage}
+        imageAlt="Morning light through a moss-covered forest floor in Yamanashi, Japan"
         actions={
           <>
             <Button to="/patterns" size="lg">
