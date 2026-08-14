@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { NAV_LINKS } from '@/constants/nav'
 import { LOGO_HANDOFF_DISTANCE } from '@/constants/motion'
 import { Logo } from '@/components/ui/Logo'
@@ -15,9 +15,12 @@ interface NavBarProps {
   overlay?: boolean
 }
 
+/** Index of the link the arch frames. Middle of three. */
+const ARCH_INDEX = Math.floor(NAV_LINKS.length / 2)
+
 /**
- * Site header: a single row with the links centred, and the logo layered over the middle
- * of that row. Both sit on the page centre line, which is where the hero logo shrinks to.
+ * Site header: a single row of centred links with the bridge arch spanning the middle one.
+ * The arch sits on the page centre line, which is where the hero logo shrinks to.
  *
  * It carries no fill at the top of the page. Once scrolled it takes one on, because past
  * the hero there is nothing behind it and page content would otherwise run through the
@@ -44,12 +47,35 @@ export function NavBar({ overlay = false }: NavBarProps) {
       )}
     >
       <PageContainer>
-        {/* One row. Links centred as a group, and the logo layered over the middle of
-            that row - which is the Patterns link, see constants/nav.ts. */}
+        {/* One row. Links centred as a group, with the arch framing the middle one -
+            Patterns, see constants/nav.ts. */}
         <nav className="relative flex h-24 items-center justify-center">
-          <ul className="hidden items-center gap-10 sm:flex">
-            {NAV_LINKS.map((link) => (
-              <li key={link.path}>
+          {/*
+            Decorative: the arch frames the middle link rather than acting as a control.
+            It sits behind the links and takes no pointer events, so the link it spans
+            stays clickable - its box is far wider than the word it arches over.
+          */}
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute left-1/2 top-1/2 z-0"
+            style={{
+              opacity: markOpacity,
+              // Centring and the handoff scale share one transform, so a class-based
+              // -translate-x-1/2 would be overwritten - both live here instead.
+              transform: `translate(-50%, -50%) scale(${0.85 + 0.15 * markOpacity})`,
+            }}
+          >
+            <Logo light={lightText} alt="" className="h-20 w-auto" />
+          </span>
+
+          <ul className="relative z-10 hidden items-center gap-6 sm:flex">
+            {NAV_LINKS.map((link, index) => (
+              <li
+                key={link.path}
+                // The middle link is the one the arch spans, so it reserves the width the
+                // arch needs. Without this the arch legs land on its neighbours.
+                className={cn(index === ARCH_INDEX && 'px-16 md:px-20')}
+              >
                 <NavLink
                   to={link.path}
                   end={link.path === '/'}
@@ -60,26 +86,6 @@ export function NavBar({ overlay = false }: NavBarProps) {
               </li>
             ))}
           </ul>
-
-          <Link
-            to="/"
-            onClick={() => setOpen(false)}
-            aria-hidden={markOpacity < 0.05}
-            tabIndex={markOpacity < 0.05 ? -1 : undefined}
-            className={cn(
-              'absolute left-1/2 top-1/2',
-              markOpacity < 0.05 && 'pointer-events-none',
-            )}
-            style={{
-              opacity: markOpacity,
-              // Centring and the handoff scale share one transform, so the class-based
-              // translate would be overwritten - both live here instead.
-              transform: `translate(-50%, -50%) scale(${0.85 + 0.15 * markOpacity})`,
-            }}
-          >
-            {/* No padding of its own; the row height is the only constraint. */}
-            <Logo light={lightText} alt="Green Bridge" className="h-20 w-auto" />
-          </Link>
 
           <button
             type="button"
