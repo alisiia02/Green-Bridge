@@ -1,4 +1,10 @@
+import path from 'node:path'
 import type { Config } from 'tailwindcss'
+
+// Anchored to this file rather than the working directory, so the class scan finds the
+// source whether Vite is started from frontend/ or from the repo root. Forward slashes
+// because the glob matcher does not accept Windows backslashes.
+const root = path.resolve(__dirname).replace(/\\/g, '/')
 
 /**
  * Green Bridge design tokens.
@@ -9,7 +15,7 @@ import type { Config } from 'tailwindcss'
  *   - never use rounded-none; 8px (rounded-sm) is the floor
  */
 export default {
-  content: ['./index.html', './src/**/*.{ts,tsx}'],
+  content: [`${root}/index.html`, `${root}/src/**/*.{ts,tsx}`],
   theme: {
     extend: {
       colors: {

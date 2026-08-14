@@ -4,6 +4,9 @@ import path from 'node:path'
 
 export default defineConfig({
   plugins: [react()],
+  // Pinned to this file's folder so the root `npm run dev` can start Vite from the repo
+  // root without it mistaking the workspace root for the app root.
+  root: __dirname,
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

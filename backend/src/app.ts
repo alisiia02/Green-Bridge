@@ -3,14 +3,16 @@ import cors from 'cors'
 import { healthRouter } from './routes/health.routes.js'
 import { patternsRouter } from './routes/patterns.routes.js'
 
-const CORS_ORIGIN = (process.env.CORS_ORIGIN ?? 'http://localhost:5173')
-  .split(',')
-  .map((origin) => origin.trim())
-
 export function createApp() {
+  // Read inside the factory, not at module load - server.ts loads .env after its imports
+  // have already been evaluated.
+  const corsOrigin = (process.env.CORS_ORIGIN ?? 'http://localhost:5173')
+    .split(',')
+    .map((origin) => origin.trim())
+
   const app = express()
 
-  app.use(cors({ origin: CORS_ORIGIN }))
+  app.use(cors({ origin: corsOrigin }))
   app.use(express.json())
 
   app.use('/api/health', healthRouter)
