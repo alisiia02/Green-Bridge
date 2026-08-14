@@ -8,9 +8,9 @@
     "backend"
   ],
   "scripts": {
-    "dev": "concurrently -n web,api -c green,cyan \"cd frontend && vite\" \"cd backend && tsx watch src/server.ts\"",
-    "dev:web": "cd frontend && vite",
-    "dev:api": "cd backend && tsx watch src/server.ts",
+    "dev": "concurrently -n web,api -c green,cyan \"vite --config frontend/vite.config.ts\" \"tsx watch backend/src/server.ts\"",
+    "dev:web": "vite --config frontend/vite.config.ts",
+    "dev:api": "tsx watch backend/src/server.ts",
     "build": "cd frontend && tsc --noEmit && vite build && cd ../backend && tsc"
   },
   "devDependencies": {
