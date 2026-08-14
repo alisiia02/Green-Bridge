@@ -258,16 +258,27 @@ by route in `Layout`:
 | `overlay` | Pages opening on a hero (`/`) | `fixed` | Transparent, white text, mark hidden | Fill, dark text, mark shown |
 | default | Everything else | `sticky` | Transparent, dark text | Fill, dark text |
 
-Layout is `grid-cols-[1fr_auto_1fr]` — links left, **logo centred**, links and menu button
-right. `NAV_LINKS` is split at its midpoint, so a fourth link lands on the left. The active
-link is underlined rather than filled, since there is often no fill for a pill to sit on.
+One row. The links are centred as a group and the **logo is layered over the middle of that
+row**, absolutely positioned on the centre line. `NAV_LINKS` is ordered so **Patterns** is
+the middle entry, which is what the logo sits over. The logo carries no padding of its own;
+the row height is its only constraint.
+
+Its centring translate and its handoff scale share a single `transform`, so both live in
+the inline style — a class-based `-translate-x-1/2` would be overwritten by the scale.
+
+The active link is underlined rather than filled, since there is often no fill for a pill
+to sit on.
 
 ### Logo handoff
 
 Scrolling the home page shrinks the hero logo and fades the header mark in over the same
 distance, so the big logo appears to travel up into the header. The two are different
-artwork, so this is a cross-fade, not a morph — both being horizontally centred is what
-sells it.
+artwork, so this is a cross-fade, not a morph.
+
+The header mark sits just right of centre, after the links, so the hero logo drifts that
+way as it goes — `LOGO_HANDOFF_DRIFT_X`. That value is approximate by design: a cross-fade
+only has to point in the right direction, so it is not worth measuring both elements to
+land it exactly.
 
 Both components read `LOGO_HANDOFF_DISTANCE` from `constants/motion.ts`. **Keep them on the
 same constant**: if they disagree, one half finishes before the other starts and the

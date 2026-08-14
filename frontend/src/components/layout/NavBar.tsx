@@ -15,13 +15,9 @@ interface NavBarProps {
   overlay?: boolean
 }
 
-// Links are split either side of the centred logo. An added link lands on the left first.
-const SPLIT = Math.ceil(NAV_LINKS.length / 2)
-const LEFT_LINKS = NAV_LINKS.slice(0, SPLIT)
-const RIGHT_LINKS = NAV_LINKS.slice(SPLIT)
-
 /**
- * Site header, with the logo centred so the hero logo has somewhere to shrink into.
+ * Site header: a single row with the links centred, and the logo layered over the middle
+ * of that row. Both sit on the page centre line, which is where the hero logo shrinks to.
  *
  * It carries no fill at the top of the page. Once scrolled it takes one on, because past
  * the hero there is nothing behind it and page content would otherwise run through the
@@ -48,9 +44,11 @@ export function NavBar({ overlay = false }: NavBarProps) {
       )}
     >
       <PageContainer>
-        <nav className="grid h-20 grid-cols-[1fr_auto_1fr] items-center gap-4">
-          <ul className="hidden items-center gap-8 sm:flex">
-            {LEFT_LINKS.map((link) => (
+        {/* One row. Links centred as a group, and the logo layered over the middle of
+            that row - which is the Patterns link, see constants/nav.ts. */}
+        <nav className="relative flex h-24 items-center justify-center">
+          <ul className="hidden items-center gap-10 sm:flex">
+            {NAV_LINKS.map((link) => (
               <li key={link.path}>
                 <NavLink
                   to={link.path}
@@ -69,45 +67,32 @@ export function NavBar({ overlay = false }: NavBarProps) {
             aria-hidden={markOpacity < 0.05}
             tabIndex={markOpacity < 0.05 ? -1 : undefined}
             className={cn(
-              'rounded-md justify-self-center',
+              'absolute left-1/2 top-1/2',
               markOpacity < 0.05 && 'pointer-events-none',
             )}
             style={{
               opacity: markOpacity,
-              transform: `scale(${0.8 + 0.2 * markOpacity})`,
+              // Centring and the handoff scale share one transform, so the class-based
+              // translate would be overwritten - both live here instead.
+              transform: `translate(-50%, -50%) scale(${0.85 + 0.15 * markOpacity})`,
             }}
           >
-            <Logo light={lightText} alt="Green Bridge" className="h-12 w-auto" />
+            {/* No padding of its own; the row height is the only constraint. */}
+            <Logo light={lightText} alt="Green Bridge" className="h-20 w-auto" />
           </Link>
 
-          <div className="flex items-center justify-end gap-8">
-            <ul className="hidden items-center gap-8 sm:flex">
-              {RIGHT_LINKS.map((link) => (
-                <li key={link.path}>
-                  <NavLink
-                    to={link.path}
-                    end={link.path === '/'}
-                    className={({ isActive }) => navLinkClasses(isActive, lightText)}
-                  >
-                    {link.label}
-                  </NavLink>
-                </li>
-              ))}
-            </ul>
-
-            <button
-              type="button"
-              aria-expanded={open}
-              aria-label="Toggle navigation"
-              onClick={() => setOpen((value) => !value)}
-              className={cn(
-                'rounded-md p-2 transition-colors sm:hidden',
-                lightText ? 'text-white hover:bg-white/15' : 'text-green-700 hover:bg-green-50',
-              )}
-            >
-              <MenuIcon open={open} />
-            </button>
-          </div>
+          <button
+            type="button"
+            aria-expanded={open}
+            aria-label="Toggle navigation"
+            onClick={() => setOpen((value) => !value)}
+            className={cn(
+              'absolute right-0 top-1/2 -translate-y-1/2 rounded-md p-2 transition-colors sm:hidden',
+              lightText ? 'text-white hover:bg-white/15' : 'text-green-700 hover:bg-green-50',
+            )}
+          >
+            <MenuIcon open={open} />
+          </button>
         </nav>
 
         {open && (

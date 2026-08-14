@@ -32,9 +32,9 @@ const PARALLAX_STRENGTH = 0.3
  * Full-width image banner with the logo and intro centred over the photo.
  *
  * On scroll the logo shrinks and rises while the block fades, handing off to the mark in
- * the header, which fades in over the same distance. The two are different artwork - one
- * carries the wordmark, one does not - so this is a cross-fade rather than a true morph;
- * both being horizontally centred is what sells it as one continuous movement.
+ * the header, which fades in over the same distance. Both sit on the page centre line, so
+ * the movement is straight up. The two are different artwork - one carries the wordmark,
+ * one does not - so this is a cross-fade rather than a true morph.
  *
  * The image itself is oversized and drifts more slowly than the page. The scrim is a flat
  * colour at partial opacity, not a gradient: it holds the white text legible over whatever
