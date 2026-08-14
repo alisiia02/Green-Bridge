@@ -11,7 +11,7 @@ export function NotFound() {
         title="This page does not exist"
         description="The link may be out of date, or the page has not been built yet. Most of this site is still in progress."
       />
-      <Section className="pb-24">
+      <Section>
         <Button to="/">Back to home</Button>
       </Section>
     </PageContainer>

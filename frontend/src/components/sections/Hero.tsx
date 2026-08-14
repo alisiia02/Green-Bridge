@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
-import { Badge } from '@/components/ui/Badge'
+import { PageContainer } from '@/components/layout/PageContainer'
 import { PlaceholderImage } from '@/components/ui/PlaceholderImage'
+import { Eyebrow } from '@/components/ui/Eyebrow'
 import { cn } from '@/lib/cn'
 
 interface HeroProps {
@@ -13,29 +14,34 @@ interface HeroProps {
   className?: string
 }
 
-/** Large rounded opening panel. Home page only, unless a page earns the same weight. */
-export function Hero({
-  eyebrow,
-  title,
-  description,
-  actions,
-  imageLabel = 'Header image coming soon',
-  className,
-}: HeroProps) {
+/**
+ * Full-width image banner with the page title in a frosted panel over it.
+ *
+ * The image runs edge to edge, so it is the one element on the site without a corner
+ * radius - a rounded full-bleed banner would show slivers of background at the corners.
+ * Everything layered on top of it stays rounded.
+ */
+export function Hero({ eyebrow, title, description, actions, imageLabel, className }: HeroProps) {
   return (
-    <div className={cn('rounded-xl bg-green-50 p-8 md:p-12', className)}>
-      <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
-        <div className="space-y-6">
-          {eyebrow && <Badge>{eyebrow}</Badge>}
-          <h1 className="text-4xl font-semibold tracking-tight text-green-900 md:text-5xl">
-            {title}
-          </h1>
-          <p className="max-w-xl text-lg leading-relaxed text-neutral-600">{description}</p>
-          {actions && <div className="flex flex-wrap items-center gap-3 pt-1">{actions}</div>}
-        </div>
+    <section className={cn('relative isolate', className)}>
+      <PlaceholderImage
+        label={imageLabel ?? 'Header image'}
+        aspect="none"
+        variant="plain"
+        quiet
+        className="h-[62vh] min-h-[460px] rounded-none"
+      />
 
-        <PlaceholderImage label={imageLabel} aspect="video" className="bg-green-100" />
-      </div>
-    </div>
+      <PageContainer className="absolute inset-x-0 bottom-0 pb-10 md:pb-16">
+        <div className="max-w-2xl rounded-xl border border-white/70 bg-white/75 p-8 backdrop-blur-md md:p-10">
+          <div className="space-y-5">
+            {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
+            <h1 className="text-4xl font-bold tracking-tight text-green-900 md:text-6xl">{title}</h1>
+            <p className="max-w-xl text-lg leading-relaxed text-neutral-600">{description}</p>
+            {actions && <div className="flex flex-wrap items-center gap-3 pt-2">{actions}</div>}
+          </div>
+        </div>
+      </PageContainer>
+    </section>
   )
 }

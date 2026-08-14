@@ -1,15 +1,10 @@
 import { PageContainer } from '@/components/layout/PageContainer'
 import { PageHeader } from '@/components/sections/PageHeader'
-import { Card, CardBody, CardTitle } from '@/components/ui/Card'
+import { SplitRow } from '@/components/sections/SplitRow'
+import { Band } from '@/components/ui/Band'
 import { PlaceholderImage } from '@/components/ui/PlaceholderImage'
 import { Section } from '@/components/ui/Section'
 import { PLACEHOLDER_TEXT, SITE } from '@/constants/site'
-
-const TEAM = SITE.team.map((name) => ({
-  name,
-  role: 'Placeholder role',
-  bio: PLACEHOLDER_TEXT.short,
-}))
 
 const APPROACH = [
   {
@@ -34,63 +29,79 @@ const APPROACH = [
   },
 ]
 
+const TEAM = SITE.team.map((name) => ({
+  name,
+  role: 'Placeholder role',
+  bio: PLACEHOLDER_TEXT.short,
+}))
+
 export function AboutUs() {
   return (
-    <PageContainer>
-      <PageHeader
-        eyebrow="About us"
-        title="Two students, one question about cities"
-        description="Green Bridge is an HZ Honours Programme project asking how the measurable benefits of forest bathing can be brought into the everyday green spaces of European cities."
-      />
+    <>
+      <PageContainer>
+        <PageHeader
+          eyebrow="About us"
+          title="Two students, one question about cities"
+          description="Green Bridge is an HZ Honours Programme project asking how the measurable benefits of forest bathing can be brought into the everyday green spaces of European cities."
+        />
 
-      <Section>
-        <div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-14">
-          <PlaceholderImage label="Project image coming soon" aspect="square" />
-          <Card className="space-y-4 p-8">
-            <CardTitle className="text-xl">Why this project</CardTitle>
-            <CardBody>{PLACEHOLDER_TEXT.medium}</CardBody>
-            <CardBody>{PLACEHOLDER_TEXT.medium}</CardBody>
-          </Card>
-        </div>
-      </Section>
+        <Section>
+          <SplitRow
+            eyebrow="Why this project"
+            title="Green space is treated as leftover land"
+            body={PLACEHOLDER_TEXT.medium}
+            imageLabel="Project image"
+          />
+        </Section>
+      </PageContainer>
 
-      <Section
-        title="How we work"
-        description="The same four steps run for every pattern we develop, so each one arrives with the same kind of backing."
-      >
-        <div className="grid gap-6 sm:grid-cols-2">
-          {APPROACH.map((item) => (
-            <Card key={item.step} className="space-y-3">
-              <span className="text-sm font-semibold text-green-400">{item.step}</span>
-              <CardTitle>{item.title}</CardTitle>
-              <CardBody className="text-sm">{item.body}</CardBody>
-            </Card>
-          ))}
-        </div>
-      </Section>
+      <Band tone="soft">
+        <Section
+          eyebrow="How we work"
+          title="The same four steps for every pattern"
+          description="So each one arrives with the same kind of backing behind it."
+        >
+          <ol className="grid gap-x-16 gap-y-10 sm:grid-cols-2">
+            {APPROACH.map((item) => (
+              <li key={item.step} className="border-l-2 border-green-300 pl-6">
+                <span className="text-sm font-semibold tracking-[0.16em] text-green-500">
+                  {item.step}
+                </span>
+                <h3 className="mt-2 text-xl font-semibold text-green-900">{item.title}</h3>
+                <p className="mt-3 leading-relaxed text-neutral-600">{item.body}</p>
+              </li>
+            ))}
+          </ol>
+        </Section>
+      </Band>
 
-      <Section
-        title="The team"
-        description="Placeholder profiles. Photos and real bios will replace these."
-        className="pb-20"
-      >
-        <div className="grid gap-6 sm:grid-cols-2">
-          {TEAM.map((member) => (
-            <Card key={member.name} className="flex flex-col gap-5 sm:flex-row sm:items-start">
-              <PlaceholderImage
-                label="Photo"
-                aspect="square"
-                className="w-full shrink-0 p-3 sm:w-32"
-              />
-              <div className="space-y-2">
-                <CardTitle>{member.name}</CardTitle>
-                <p className="text-sm text-neutral-400">{member.role}</p>
-                <CardBody className="text-sm">{member.bio}</CardBody>
+      <PageContainer>
+        <Section
+          eyebrow="The team"
+          title="Who is behind this"
+          description="Placeholder profiles. Photos and real bios will replace these."
+        >
+          <div className="grid gap-12 sm:grid-cols-2">
+            {TEAM.map((member) => (
+              <div key={member.name} className="space-y-5">
+                <PlaceholderImage
+                  label="Photo"
+                  aspect="portrait"
+                  variant="plain"
+                  className="max-w-[16rem]"
+                />
+                <div className="space-y-2">
+                  <h3 className="text-xl font-semibold text-green-900">{member.name}</h3>
+                  <p className="text-sm uppercase tracking-[0.14em] text-neutral-400">
+                    {member.role}
+                  </p>
+                  <p className="max-w-md leading-relaxed text-neutral-600">{member.bio}</p>
+                </div>
               </div>
-            </Card>
-          ))}
-        </div>
-      </Section>
-    </PageContainer>
+            ))}
+          </div>
+        </Section>
+      </PageContainer>
+    </>
   )
 }

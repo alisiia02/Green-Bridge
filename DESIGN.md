@@ -12,13 +12,19 @@ Green Bridge presents research on urban green spaces and shinrin-yoku (forest ba
 interface should feel like the thing it advocates for: **calm, natural, unhurried, and easy
 to be in**. Nothing sharp, nothing shouty, nothing that looks like a dashboard.
 
-**Three rules that define the look:**
+**Five rules that define the look:**
 
 1. **Green is the identity.** One green scale carries the whole site. Everything else is
    support.
-2. **No gradients.** Solid fills only, everywhere, no exceptions.
+2. **No gradients.** Solid fills and flat translucency only, everywhere, no exceptions.
 3. **Nothing sharp.** Every box, button, image, and tag has a rounded corner. The smallest
-   radius on the site is 8px.
+   radius on the site is 8px. The single exception is full-bleed banners (see §8).
+4. **Bands, not borders.** Sections are separated by full-width tinted backgrounds, not by
+   drawing an outline around every block.
+5. **Cards are the exception.** Content sits directly on the page by default. A card is
+   what you reach for when a block genuinely needs to lift off what is behind it — not the
+   default wrapper for everything. Four bordered boxes in a row read as clutter; the same
+   content as icons and text reads as one calm group.
 
 ---
 
@@ -105,6 +111,7 @@ Tailwind's default 4px spacing scale is used unchanged. The conventions that mat
 | Context | Class | Notes |
 | --- | --- | --- |
 | Section vertical rhythm | `py-16` / `md:py-24` | Handled by `<Section>` — don't hand-roll |
+| Gap between split rows | `space-y-20 md:space-y-28` | Big gaps are the point |
 | Page content width | `max-w-6xl` | Handled by `<PageContainer>` |
 | Horizontal page padding | `px-5 sm:px-8` | Also in `<PageContainer>` |
 | Card padding | `p-6` | `p-8` for feature cards |
@@ -122,8 +129,9 @@ System font stack — no webfont dependency, fast, and neutral enough not to fig
 
 | Element | Classes |
 | --- | --- |
-| Page title (h1) | `text-4xl md:text-5xl font-semibold tracking-tight text-green-900` |
-| Section title (h2) | `text-2xl md:text-3xl font-semibold text-green-900` |
+| Page title (h1) | `text-4xl md:text-6xl font-bold tracking-tight text-green-900` |
+| Section title (h2) | `text-3xl md:text-4xl font-semibold tracking-tight text-green-900` |
+| Eyebrow | `text-xs font-semibold uppercase tracking-[0.18em] text-green-600` |
 | Card title (h3) | `text-lg font-semibold text-green-900` |
 | Body | `text-base leading-relaxed text-neutral-600` |
 | Lead / intro | `text-lg leading-relaxed text-neutral-600` |
@@ -161,20 +169,61 @@ tailwind-merge), so callers can adjust spacing without the component needing a n
 Sizes: `sm` (`px-4 py-2 text-sm`), `md` (`px-5 py-2.5`), `lg` (`px-7 py-3 text-lg`).
 Renders as `<a>` when given `href`, otherwise `<button>`.
 
+### Band
+
+Full-width tinted section — the main tool for separating content. Tones: `soft`
+(`green-50`), `green` (`green-100`), `white`, `dark` (`green-800`). Place a `Band` as a
+direct child of the page, a **sibling** of `PageContainer` rather than inside it, or the
+background will stop at the content width instead of reaching the viewport edges.
+
+Alternate `soft` and untinted sections down a page. Two identical tones touching read as
+one long block.
+
 ### Card
 
-`rounded-lg border border-neutral-200 bg-white p-6`. Optional `interactive` prop adds a
-hover lift (`hover:border-green-200 hover:shadow-sm`) — only for cards that are actually
-clickable.
+Three variants, in order of how often you should use them:
+
+| Variant | Appearance | When |
+| --- | --- | --- |
+| `plain` | Padding only, no chrome | Grid items, most content blocks |
+| `glass` (default) | `bg-white/70` + `backdrop-blur-md` + `border-white/70` | On top of a tinted Band or an image |
+| `solid` | `bg-white` + `border-neutral-200` | Only when nothing interesting is behind it |
+
+`glass` is the house style, but it only works when something shows through it. A frosted
+panel on a plain background is just a white box with extra steps — put it on a `Band` or
+over a photo, or use `plain` instead.
+
+### Eyebrow
+
+Small uppercase label above a heading: `text-xs font-semibold uppercase tracking-[0.18em]`.
+Use for structural labels ("what section is this"). Use a `Badge` instead when the label is
+data, like a pattern's category.
+
+### FeatureItem
+
+Circular pale-green icon, uppercase label, one line of text — deliberately **no box**. This
+is the replacement for a row of small cards.
 
 ### PlaceholderImage
 
-Stands in for every real image until the project has photography. `rounded-lg`, filled with
-`green-100`, a `green-200` dashed border, a small leaf mark and an optional `label`. Takes
-an `aspect` prop (`video` | `square` | `wide` | `portrait`).
+Stands in for every real image until the project has photography. Filled with `green-100`,
+a leaf mark and an optional `label`. Props:
+
+- `aspect`: `video` | `square` | `wide` | `portrait` | `none` (height from `className`)
+- `variant`: `framed` (dashed outline, for inline content) | `plain` (flat fill, for banners
+  — dashes look broken at large sizes)
+- `quiet`: hides the icon and caption, for banners with content layered on top
 
 When real images arrive, replace the component call, not the layout around it — the aspect
 ratios are already set so nothing shifts.
+
+### Hero / SplitRow
+
+`Hero` is a full-bleed image banner with the title in a glass panel over it. One per page,
+home page only.
+
+`SplitRow` is image one side, text the other, with a `reverse` prop to alternate. Two of
+these carry more weight than six small cards and give the eye somewhere to rest.
 
 ### Badge
 
@@ -189,15 +238,27 @@ ratios are already set so nothing shifts.
 
 - Solid green fills from the scale above
 - Rounded corners on everything — `rounded-lg` is the safe default for containers
-- Generous vertical whitespace between sections
+- Generous vertical whitespace between sections — more than feels necessary
 - Warm neutrals for text instead of pure gray or black
+- Separate sections with tinted `Band`s and let content sit directly on them
 - One accent element per section at most
 
 **Don't**
 
 - Gradients of any kind (`bg-gradient-*`, `from-*`, `via-*`, `to-*`)
-- Sharp corners (`rounded-none`) or radii below 8px
+- Sharp corners (`rounded-none`) or radii below 8px, except full-bleed banners
+- Wrap everything in a card. If a section is a grid of bordered boxes, ask whether it could
+  be a `FeatureItem` row, an alternating `SplitRow`, or plain text on a `Band` instead.
 - Pure `#000` text or `#fff` page backgrounds — use `green-900` and `neutral-50`
-- Heavy drop shadows — a hairline border does the job
+- Heavy drop shadows — a hairline border or a `Band` does the job
 - New colors outside the three scales. If something needs a color that isn't here, the token
   set should be extended deliberately, not bypassed inline.
+
+---
+
+## 8. Full-bleed exception
+
+Banners and `Band`s run to the viewport edge, so they carry **no corner radius** — a
+rounded full-bleed element shows slivers of the page background at its corners. This is the
+only place `rounded-none` is correct. Everything layered on top of a banner (the hero's
+glass panel, cards on a Band) keeps its normal radius.

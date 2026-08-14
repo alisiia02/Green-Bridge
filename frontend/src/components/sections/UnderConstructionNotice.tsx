@@ -1,34 +1,33 @@
 import { UNDER_CONSTRUCTION } from '@/constants/site'
-import { Badge } from '@/components/ui/Badge'
+import { Eyebrow } from '@/components/ui/Eyebrow'
 import { cn } from '@/lib/cn'
 
 /**
  * The site's "we're still building this" message.
  *
+ * Sits directly on a tinted Band with no box around it - this is the one message every
+ * visitor must read, so it gets the whole width of the band rather than a card.
+ *
  * Delete this component (and its call in pages/Home.tsx) once the real content ships.
  */
 export function UnderConstructionNotice({ className }: { className?: string }) {
   return (
-    <div
-      className={cn(
-        'rounded-lg border border-green-200 bg-white p-8 md:p-10',
-        className,
-      )}
-    >
-      <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
-        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-green-100 text-green-600">
-          <SeedlingIcon />
-        </span>
+    <div className={cn('mx-auto max-w-3xl py-20 text-center md:py-28', className)}>
+      <span className="mx-auto mb-8 flex h-14 w-14 items-center justify-center rounded-full bg-white/70 text-green-600 backdrop-blur-md">
+        <SeedlingIcon />
+      </span>
 
-        <div className="space-y-4">
-          <Badge tone="accent">{UNDER_CONSTRUCTION.eyebrow}</Badge>
-          <h2 className="text-2xl font-semibold text-green-900 md:text-3xl">
-            {UNDER_CONSTRUCTION.title}
-          </h2>
-          <p className="max-w-2xl leading-relaxed text-neutral-600">{UNDER_CONSTRUCTION.body}</p>
-          <p className="text-sm text-neutral-400">{UNDER_CONSTRUCTION.note}</p>
-        </div>
-      </div>
+      <Eyebrow className="mb-5">{UNDER_CONSTRUCTION.eyebrow}</Eyebrow>
+
+      <h2 className="text-3xl font-semibold tracking-tight text-green-900 md:text-4xl">
+        {UNDER_CONSTRUCTION.title}
+      </h2>
+
+      <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-green-800/80">
+        {UNDER_CONSTRUCTION.body}
+      </p>
+
+      <p className="mt-6 text-sm text-green-700/70">{UNDER_CONSTRUCTION.note}</p>
     </div>
   )
 }
@@ -38,10 +37,10 @@ function SeedlingIcon() {
     <svg
       viewBox="0 0 24 24"
       aria-hidden="true"
-      className="h-6 w-6"
+      className="h-7 w-7"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.6"
+      strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
     >

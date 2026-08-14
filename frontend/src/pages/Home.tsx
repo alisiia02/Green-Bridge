@@ -1,81 +1,110 @@
 import { PageContainer } from '@/components/layout/PageContainer'
 import { Hero } from '@/components/sections/Hero'
+import { SplitRow } from '@/components/sections/SplitRow'
 import { UnderConstructionNotice } from '@/components/sections/UnderConstructionNotice'
+import { Band } from '@/components/ui/Band'
 import { Button } from '@/components/ui/Button'
-import { Card, CardBody, CardTitle } from '@/components/ui/Card'
-import { PlaceholderImage } from '@/components/ui/PlaceholderImage'
+import { FeatureItem } from '@/components/ui/FeatureItem'
 import { Section } from '@/components/ui/Section'
+import { BookIcon, ChartIcon, ClockIcon, CoinIcon } from '@/components/ui/icons'
 import { SITE } from '@/constants/site'
 
-const TEASERS = [
+const QUALITIES = [
   {
-    title: 'About the project',
-    body: 'Who we are, why urban green space quality is the problem we picked, and how the research is being carried out.',
-    to: '/about',
-    linkLabel: 'Read about us',
-    imageLabel: 'Project image coming soon',
+    icon: BookIcon,
+    label: 'Evidence-based',
+    description: 'Every pattern carries the research it rests on.',
   },
   {
-    title: 'The pattern library',
-    body: 'Each pattern names one recurring problem and one evidence-backed solution, written to be usable without a specialist to translate it.',
-    to: '/patterns',
-    linkLabel: 'Browse patterns',
-    imageLabel: 'Pattern image coming soon',
+    icon: ClockIcon,
+    label: 'Fast to build',
+    description: 'Designed for four-year governance cycles, not twenty.',
   },
+  { icon: CoinIcon, label: 'Low cost', description: 'Built to survive a constrained budget.' },
   {
-    title: 'Built on shinrin-yoku',
-    body: 'Forest bathing has measurable effects on stress and immune function. Our question is how much of that survives the move into a city.',
-    to: '/patterns',
-    linkLabel: 'See the evidence',
-    imageLabel: 'Research image coming soon',
+    icon: ChartIcon,
+    label: 'Measurable',
+    description: 'Stated outcomes you can actually check afterwards.',
   },
 ]
 
 export function Home() {
   return (
-    <PageContainer>
-      <div className="pt-8 md:pt-12">
-        <Hero
-          eyebrow="HZ Honours Programme"
-          title={SITE.name}
-          description={SITE.intro}
-          imageLabel="Header image coming soon"
-          actions={
-            <>
-              <Button to="/patterns" size="lg">
-                Explore the patterns
-              </Button>
-              <Button to="/about" variant="outline" size="lg">
-                About the project
-              </Button>
-            </>
-          }
-        />
-      </div>
+    <>
+      <Hero
+        eyebrow={SITE.programme}
+        title={SITE.name}
+        description={SITE.intro}
+        imageLabel="Header image"
+        actions={
+          <>
+            <Button to="/patterns" size="lg">
+              Explore the patterns
+            </Button>
+            <Button to="/about" variant="outline" size="lg">
+              About the project
+            </Button>
+          </>
+        }
+      />
 
-      <Section className="pb-4">
+      <Band tone="green">
         <UnderConstructionNotice />
-      </Section>
+      </Band>
 
-      <Section
-        title="What will be here"
-        description="A preview of the three parts of the site. The layout is final; the content is not."
-      >
-        <div className="grid gap-6 md:grid-cols-3">
-          {TEASERS.map((teaser) => (
-            <Card key={teaser.title} className="flex flex-col gap-5 p-6">
-              <PlaceholderImage label={teaser.imageLabel} aspect="video" />
-              <div className="flex flex-1 flex-col gap-3">
-                <CardTitle>{teaser.title}</CardTitle>
-                <CardBody className="flex-1 text-sm">{teaser.body}</CardBody>
-                <Button to={teaser.to} variant="ghost" size="sm" className="self-start px-0 hover:bg-transparent hover:text-green-600">
-                  {teaser.linkLabel} &rarr;
+      <PageContainer>
+        <Section
+          eyebrow="What we're building"
+          title="A pattern library, not a report"
+          description="Two halves of the same argument: what to build, and why it works."
+        >
+          <div className="space-y-20 md:space-y-28">
+            <SplitRow
+              eyebrow="The patterns"
+              title="One problem, one solution, evidence attached"
+              body="Each pattern names a recurring problem in the city and a solution that has worked somewhere real. Written so a municipal officer can open it in a meeting without reading twelve papers first."
+              imageLabel="Pattern image"
+              actions={
+                <Button to="/patterns" variant="ghost" className="px-0 hover:bg-transparent">
+                  Browse the patterns &rarr;
                 </Button>
-              </div>
-            </Card>
-          ))}
-        </div>
-      </Section>
-    </PageContainer>
+              }
+            />
+
+            <SplitRow
+              reverse
+              eyebrow="The research"
+              title="Forest bathing, brought into the city"
+              body="Shinrin-yoku has measurable effects on stress, blood pressure and immune function. Almost all of that evidence comes from forests outside cities. Our question is how much of it survives the move inside one."
+              imageLabel="Research image"
+              actions={
+                <Button to="/about" variant="ghost" className="px-0 hover:bg-transparent">
+                  How we work &rarr;
+                </Button>
+              }
+            />
+          </div>
+        </Section>
+      </PageContainer>
+
+      <Band tone="soft">
+        <Section
+          centered
+          eyebrow="What makes a pattern"
+          title="Four things every pattern has to be"
+        >
+          <div className="grid grid-cols-2 gap-10 md:grid-cols-4 md:gap-8">
+            {QUALITIES.map((quality) => (
+              <FeatureItem
+                key={quality.label}
+                icon={quality.icon}
+                label={quality.label}
+                description={quality.description}
+              />
+            ))}
+          </div>
+        </Section>
+      </Band>
+    </>
   )
 }
