@@ -22,11 +22,13 @@ interface HeroProps {
 const BANNER_HEIGHT = 'h-[62vh] min-h-[460px]'
 
 /**
- * Full-width image banner with the page title in a frosted panel over it.
+ * Full-width image banner with the page title sitting directly on the photo.
+ *
+ * The scrim is a flat colour at partial opacity, not a gradient - it holds the text
+ * legible over whatever the photograph happens to be doing underneath.
  *
  * The image runs edge to edge, so it is the one element on the site without a corner
  * radius - a rounded full-bleed banner would show slivers of background at the corners.
- * Everything layered on top of it stays rounded.
  */
 export function Hero({
   eyebrow,
@@ -56,14 +58,14 @@ export function Hero({
         />
       )}
 
-      <PageContainer className="absolute inset-x-0 bottom-0 pb-10 md:pb-16">
-        <div className="max-w-2xl rounded-xl border border-white/70 bg-white/80 p-8 backdrop-blur-md md:p-10">
-          <div className="space-y-5">
-            {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
-            <h1 className="text-4xl font-bold tracking-tight text-green-900 md:text-6xl">{title}</h1>
-            <p className="max-w-xl text-lg leading-relaxed text-neutral-600">{description}</p>
-            {actions && <div className="flex flex-wrap items-center gap-3 pt-2">{actions}</div>}
-          </div>
+      <div className="absolute inset-0 bg-green-900/45" aria-hidden="true" />
+
+      <PageContainer className="absolute inset-x-0 bottom-0 pb-14 md:pb-20">
+        <div className="max-w-2xl space-y-5">
+          {eyebrow && <Eyebrow className="text-green-200">{eyebrow}</Eyebrow>}
+          <h1 className="text-4xl font-bold tracking-tight text-white md:text-6xl">{title}</h1>
+          <p className="max-w-xl text-lg leading-relaxed text-green-50/90">{description}</p>
+          {actions && <div className="flex flex-wrap items-center gap-3 pt-2">{actions}</div>}
         </div>
       </PageContainer>
     </section>

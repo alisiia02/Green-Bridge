@@ -43,7 +43,7 @@ export function Home() {
             <Button to="/patterns" size="lg">
               Explore the patterns
             </Button>
-            <Button to="/about" variant="outline" size="lg">
+            <Button to="/about" variant="outline-light" size="lg">
               About the project
             </Button>
           </>

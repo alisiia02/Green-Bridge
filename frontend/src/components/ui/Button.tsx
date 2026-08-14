@@ -2,13 +2,15 @@ import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from 'reac
 import { Link } from 'react-router-dom'
 import { cn } from '@/lib/cn'
 
-export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost'
+export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'outline-light' | 'ghost'
 export type ButtonSize = 'sm' | 'md' | 'lg'
 
 const VARIANTS: Record<ButtonVariant, string> = {
   primary: 'bg-green-500 text-white hover:bg-green-600',
   secondary: 'bg-green-100 text-green-800 hover:bg-green-200',
   outline: 'border border-green-200 text-green-700 hover:bg-green-50',
+  /** For use over a photo or a dark band, where the standard outline disappears. */
+  'outline-light': 'border border-white/70 text-white hover:bg-white/15',
   ghost: 'text-green-700 hover:bg-green-50',
 }
 

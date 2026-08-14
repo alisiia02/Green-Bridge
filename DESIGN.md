@@ -164,6 +164,7 @@ tailwind-merge), so callers can adjust spacing without the component needing a n
 | `primary` | `bg-green-500` fill, white text, `hover:bg-green-600` |
 | `secondary` | `bg-green-100` fill, `green-800` text, `hover:bg-green-200` |
 | `outline` | Transparent, `border-green-200`, `green-700` text |
+| `outline-light` | Transparent, `border-white/70`, white text — over photos and dark bands |
 | `ghost` | Transparent, no border, `green-700` text |
 
 Sizes: `sm` (`px-4 py-2 text-sm`), `md` (`px-5 py-2.5`), `lg` (`px-7 py-3 text-lg`).
@@ -219,8 +220,10 @@ ratios are already set so nothing shifts.
 
 ### Hero / SplitRow
 
-`Hero` is a full-bleed image banner with the title in a glass panel over it. One per page,
-home page only.
+`Hero` is a full-bleed image banner with the title sitting **directly on the photo** — no
+panel around it. Legibility comes from a flat scrim (`bg-green-900/45`, a solid colour at
+partial opacity, not a gradient) plus white text. Buttons over it use the `outline-light`
+variant; the standard `outline` disappears against a photograph. One per site, home only.
 
 `SplitRow` is image one side, text the other, with a `reverse` prop to alternate. Two of
 these carry more weight than six small cards and give the eye somewhere to rest.
