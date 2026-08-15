@@ -104,8 +104,9 @@ no `main`, because nothing runs on the server. It points at `./dist` and sets
 `not_found_handling: "single-page-application"`, which is what makes deep links work.
 
 *(If you use the older **Pages** flow instead, there is no deploy command — set the build
-output directory to `dist` and `public/_redirects` handles the routing rather than
-`wrangler.jsonc`.)*
+output directory to `dist`, and routing needs a `public/_redirects` file containing
+`/*    /index.html   200` rather than `wrangler.jsonc`. See the warning below before adding
+one.)*
 
 **The root directory matters.** Point Cloudflare at the repo root and the build fails with
 *"application detection logic has been run in the root of a workspace instead of targeting a
@@ -123,18 +124,27 @@ you — there is nothing to configure by hand.
 After that, every push to `main` rebuilds and redeploys. Pull requests get their own preview
 URL.
 
-### Two files that make it work
+### What makes deep links work
 
-Both live in `frontend/public/`, which Vite copies to the build output as-is, so they are
-unaffected by the root-directory setting above:
+The app uses history-based routing, so `/patterns` is not a real file. Something has to
+serve `index.html` for unmatched paths, or opening or refreshing any URL other than `/`
+returns Cloudflare's own 404 and the app never boots — which also means our own 404 page
+never renders.
 
-- **`_redirects`** — serves `index.html` for every path. The app uses history-based routing,
-  so `/patterns` is not a real file; without this, opening or refreshing any URL other than
-  `/` returns Cloudflare's 404 and the app never boots. This is the **Pages** mechanism; on
-  Workers the same job is done by `not_found_handling` in `wrangler.jsonc`. Both are kept so
-  the site works whichever flow deploys it.
-- **`_headers`** — caches the fingerprinted `/assets/*` for a year and forbids caching
-  `index.html`, so a new build is picked up immediately instead of serving stale asset URLs.
+On Workers that is **`not_found_handling: "single-page-application"`** in
+`frontend/wrangler.jsonc`, and nothing else.
+
+> **Do not add a `public/_redirects` file with `/* /index.html 200`.** That is the Pages way
+> of doing the same thing, and Workers reads the file too — it rejects the rule as an
+> infinite loop and **fails the deploy**. We shipped that once; the error is
+> `Invalid _redirects configuration … Infinite loop detected [code: 100324]`. If the site
+> ever moves to the Pages flow, that file comes back and `wrangler.jsonc` stops being used.
+
+### Caching
+
+`frontend/public/_headers` caches the fingerprinted `/assets/*` for a year and forbids
+caching `index.html`, so a new build is picked up immediately instead of the browser holding
+on to the previous build's asset URLs. Vite copies `public/` into the build output as-is.
 
 ### When the backend is needed
 
