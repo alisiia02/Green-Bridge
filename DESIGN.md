@@ -268,13 +268,17 @@ Three measurements hold this together. Change the arch height and all three move
 | Concern | Rule |
 | --- | --- |
 | Middle link is centred | Side links get `flex-1` **equal-width slots**. Centring the row is not enough — the links differ in width, which shifts the middle one off the centre line and away from the arch. |
-| Arch clears its neighbours | The middle link reserves `px-20` (`md:px-24`). At `h-24` the arch is 207px wide against a ~62px word, so it overhangs by ~73px each side. |
-| Label sits in the opening | The row is a standard `h-20` with `items-center`, so the label centres at 40px. The arch is bigger than the row (`h-24`) and pulled up (`-top-3`), which crosses the row at the arch's widest rather than near its apex — the label clears the inner curve by ~8px. |
+| Arch clears its neighbours | The middle link reserves `px-16` (`md:px-20`). At 88px tall the arch is 190px wide against a ~62px word, so it overhangs by ~64px each side. |
+| Label sits in the opening | The row is `h-16` with `items-center`, so the label centres at 32px. The arch is bigger than the row (88px) and pulled up (`-top-4`), which crosses the row at the arch's widest rather than near its apex — the label clears the inner curve by ~6px. |
 
-The row is `overflow-hidden`, so both ends of the arch crop: ~12px of leaf at the top and
-~4px of leg at the bottom. That top crop is the cost of a standard-height row — the arch has
-to ride up for its opening to be wide enough where a vertically centred label sits. A taller
-row would keep the leaves whole.
+The row is `overflow-hidden`, so both ends of the arch crop: ~16px of leaf at the top and
+~8px of leg at the bottom. The crop is deliberate.
+
+**The label does not scale with the arch.** It stays ~62px wide and ~20px tall whatever the
+artwork does, so shrinking the arch shrinks the opening around a fixed-size word and eats
+the clearance. Scaling the row and arch down together is therefore not enough — the arch
+also has to ride up further, which is why the top crop grows as the header gets shorter.
+Check the clearance after any size change; below ~4px the artwork starts touching the text.
 
 The arch's centring translate and its handoff scale share one `transform`, so both live in
 the inline style — a class-based `-translate-x-1/2` would be overwritten by the scale — with

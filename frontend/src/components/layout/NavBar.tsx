@@ -55,7 +55,7 @@ export function NavBar({ overlay = false }: NavBarProps) {
       <PageContainer>
         {/* One row, with the arch spanning the middle link - Patterns, see
             constants/nav.ts. overflow-hidden crops the arch legs at the header edge. */}
-        <nav className="relative h-20 overflow-hidden">
+        <nav className="relative h-16 overflow-hidden">
           {/*
             Decorative: the arch frames the middle link rather than acting as a control.
             It sits behind the links and takes no pointer events, so the link it spans
@@ -68,7 +68,7 @@ export function NavBar({ overlay = false }: NavBarProps) {
           */}
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute -top-3 left-1/2 z-0"
+            className="pointer-events-none absolute -top-4 left-1/2 z-0"
             style={{
               opacity: markOpacity,
               // Centring and the handoff scale share one transform, so a class-based
@@ -77,7 +77,7 @@ export function NavBar({ overlay = false }: NavBarProps) {
               transformOrigin: 'top center',
             }}
           >
-            <Logo light={lightText} alt="" className="h-24 w-auto" />
+            <Logo light={lightText} alt="" className="h-[5.5rem] w-auto" />
           </span>
 
           <ul className="relative z-10 hidden h-full w-full items-center gap-6 sm:flex">
@@ -88,7 +88,7 @@ export function NavBar({ overlay = false }: NavBarProps) {
                   index === ARCH_INDEX
                     ? // Reserves the width the arch needs, or its legs land on the
                       // neighbouring links.
-                      'shrink-0 px-20 text-center md:px-24'
+                      'shrink-0 px-16 text-center md:px-20'
                     : // Equal-width slots either side. Centring the row is not enough:
                       // the links differ in width, which shifts the middle one off centre
                       // and away from the arch.
