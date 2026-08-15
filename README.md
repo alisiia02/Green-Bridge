@@ -64,6 +64,25 @@ so this is not required for local development.
 | GET | `/api/health` | `{ status: "ok" }` |
 | GET | `/api/patterns` | Array of placeholder pattern objects |
 
+## What is live, and how to change it
+
+The site is under construction, so only the **home page** (banner + the
+under-construction notice) and the **404** are reachable. About Us and Patterns are written
+and working but hidden — their code stays in the repo, stays imported, and keeps
+type-checking, so it cannot rot while it waits.
+
+Everything is controlled from one file: **`frontend/src/constants/publish.ts`**.
+
+| To do this | Change |
+| --- | --- |
+| Put a page live | Add its path to `PUBLISHED_PATHS` |
+| Show the home page's preview sections | `SHOW_HOME_PREVIEW = true` |
+| Take the whole site live | `PUBLISHED_PATHS = ALL_PATHS` and `SHOW_HOME_PREVIEW = true` |
+
+Adding a path is the whole job — the route registers itself, the link appears in the header
+and footer, and the matching button on the home page comes back. Paths that are not
+published fall through to the 404 rather than a blank screen.
+
 ## Design
 
 See **[DESIGN.md](DESIGN.md)** before adding UI. Short version: green palette, no gradients

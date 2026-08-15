@@ -16,11 +16,11 @@ interface NavBarProps {
 }
 
 /**
- * Index of the link the arch frames.
+ * Index of the link the arch frames - the middle of however many are published.
  *
- * The layout assumes an odd number of links, so that this one is the true middle with
- * equal counts either side. An even number would sit off centre and pull away from the
- * arch; group the extras rather than letting the slots go uneven.
+ * The layout assumes an odd number, so that this one is the true middle with equal counts
+ * either side. An even number would sit off centre and pull away from the arch; group the
+ * extras rather than letting the slots go uneven. With one link it is that link.
  */
 const ARCH_INDEX = Math.floor(NAV_LINKS.length / 2)
 
@@ -80,7 +80,9 @@ export function NavBar({ overlay = false }: NavBarProps) {
             <Logo light={lightText} alt="" className="h-[5.5rem] w-auto" />
           </span>
 
-          <ul className="relative z-10 hidden h-full w-full items-center gap-6 sm:flex">
+          {/* justify-center only bites when the side slots are absent - i.e. while most
+              pages are unpublished and a single link is left to centre. */}
+          <ul className="relative z-10 hidden h-full w-full items-center justify-center gap-6 sm:flex">
             {NAV_LINKS.map((link, index) => (
               <li
                 key={link.path}
