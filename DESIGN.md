@@ -268,8 +268,24 @@ Three measurements hold this together. Change the arch height and all three move
 | Concern | Rule |
 | --- | --- |
 | Middle link is centred | Side links get `flex-1` **equal-width slots**. Centring the row is not enough — the links differ in width, which shifts the middle one off the centre line and away from the arch. |
-| Arch clears its neighbours | The middle link reserves `px-16` (`md:px-20`). At 88px tall the arch is 190px wide against a ~62px word, so it overhangs by ~64px each side. |
-| Label sits in the opening | The row is `h-16` with `items-center`, so the label centres at 32px. The arch is bigger than the row (88px) and pulled up (`-top-4`), which crosses the row at the arch's widest rather than near its apex — the label clears the inner curve by ~6px. |
+| Arch clears its neighbours | The middle link reserves enough padding for the arch's overhang. At 88px tall the arch is 190px wide against a ~62px word, so it overhangs by ~64px each side; `px-16` plus the gap covers it. |
+| Label sits in the opening | The row is `h-16` with `items-center`, so the label centres at 32px. The arch is bigger than the row and pulled up, which crosses the row at the arch's widest rather than near its apex — the label clears the inner curve by ~6px. |
+
+**There is no hamburger** — the same row serves every width. Four things step down together
+to fit three links and the arch on a 360px screen, and they are a set:
+
+| | Mobile | `sm` and up |
+| --- | --- | --- |
+| Link type | `text-xs` | `text-sm` |
+| Gap | `gap-2` | `gap-6` |
+| Arch height / offset | 72px, `-top-2` | 88px, `-top-4` |
+| Middle-link reserve | `px-12` | `px-16` (`md:px-20`) |
+
+At those mobile values the row measures ~252px against ~320px of usable width on a 360px
+screen, and the arch clears the neighbouring links by ~4px. **Change one of the four and
+recheck the other three**: shrinking the arch alone leaves dead space, shrinking the reserve
+alone puts the arch legs back on top of Home and About Us, and bumping the type alone
+overflows the screen.
 
 The row is `overflow-hidden`, so both ends of the arch crop: ~16px of leaf at the top and
 ~8px of leg at the bottom. The crop is deliberate.

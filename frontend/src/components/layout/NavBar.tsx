@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { NAV_LINKS } from '@/constants/nav'
 import { LOGO_HANDOFF_DISTANCE } from '@/constants/motion'
@@ -28,13 +27,17 @@ const ARCH_INDEX = Math.floor(NAV_LINKS.length / 2)
  * Site header: a single row of centred links with the bridge arch spanning the middle one.
  * The arch sits on the page centre line, which is where the hero logo shrinks to.
  *
- * It carries no fill at the top of the page. Once scrolled it takes one on, because past
- * the hero there is nothing behind it and page content would otherwise run through the
- * links. On hero pages it is fixed and the mark fades in as the hero logo fades out; on
- * every other page it is sticky and the mark is simply always there.
+ * The same row at every width - no hamburger. Three links and the arch fit a 360px screen
+ * once the type, the gaps, the arch and its reserve all step down together; those four are
+ * a set, and changing one without the others either overflows the screen or lets the arch
+ * legs land on the neighbouring links.
+ *
+ * It carries no fill at the top of a page and takes one on once scrolled - past the hero
+ * there is nothing behind it, and content would otherwise run through the links. On hero
+ * pages it is fixed and the mark fades in as the hero logo fades out; on every other page
+ * it is sticky and the mark is simply always there.
  */
 export function NavBar({ overlay = false }: NavBarProps) {
-  const [open, setOpen] = useState(false)
   const progress = useScrollProgress(LOGO_HANDOFF_DISTANCE)
 
   const scrolled = progress > 0.5
@@ -47,14 +50,12 @@ export function NavBar({ overlay = false }: NavBarProps) {
       className={cn(
         'z-40 w-full border-b transition-colors duration-300',
         overlay ? 'fixed inset-x-0 top-0' : 'sticky top-0',
-        scrolled
-          ? 'border-neutral-200 bg-neutral-50/90 backdrop-blur-md'
-          : 'border-transparent',
+        scrolled ? 'border-neutral-200 bg-neutral-50/90 backdrop-blur-md' : 'border-transparent',
       )}
     >
       <PageContainer>
         {/* One row, with the arch spanning the middle link - Patterns, see
-            constants/nav.ts. overflow-hidden crops the arch legs at the header edge. */}
+            constants/nav.ts. overflow-hidden crops the arch at the header edges. */}
         <nav className="relative h-16 overflow-hidden">
           {/*
             Decorative: the arch frames the middle link rather than acting as a control.
@@ -63,12 +64,12 @@ export function NavBar({ overlay = false }: NavBarProps) {
 
             Taller than the row and pulled up past its top edge, so the arch crosses the
             row at its widest rather than at the apex - that is what clears the label,
-            which is centred on a standard-height row. Both edges crop.
-            transform-origin keeps the top edge put while the handoff scales it.
+            which is centred on the row. transform-origin keeps the top edge put while the
+            handoff scales it.
           */}
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute -top-4 left-1/2 z-0"
+            className="pointer-events-none absolute -top-2 left-1/2 z-0 sm:-top-4"
             style={{
               opacity: markOpacity,
               // Centring and the handoff scale share one transform, so a class-based
@@ -77,20 +78,20 @@ export function NavBar({ overlay = false }: NavBarProps) {
               transformOrigin: 'top center',
             }}
           >
-            <Logo light={lightText} alt="" className="h-[5.5rem] w-auto" />
+            <Logo light={lightText} alt="" className="h-[4.5rem] w-auto sm:h-[5.5rem]" />
           </span>
 
           {/* justify-center only bites when the side slots are absent - i.e. while most
               pages are unpublished and a single link is left to centre. */}
-          <ul className="relative z-10 hidden h-full w-full items-center justify-center gap-6 sm:flex">
+          <ul className="relative z-10 flex h-full w-full items-center justify-center gap-2 sm:gap-6">
             {NAV_LINKS.map((link, index) => (
               <li
                 key={link.path}
                 className={cn(
                   index === ARCH_INDEX
                     ? // Reserves the width the arch needs, or its legs land on the
-                      // neighbouring links.
-                      'shrink-0 px-16 text-center md:px-20'
+                      // neighbouring links. Steps up with the arch at each breakpoint.
+                      'shrink-0 px-12 text-center sm:px-16 md:px-20'
                     : // Equal-width slots either side. Centring the row is not enough:
                       // the links differ in width, which shifts the middle one off centre
                       // and away from the arch.
@@ -109,42 +110,7 @@ export function NavBar({ overlay = false }: NavBarProps) {
               </li>
             ))}
           </ul>
-
-          <button
-            type="button"
-            aria-expanded={open}
-            aria-label="Toggle navigation"
-            onClick={() => setOpen((value) => !value)}
-            className={cn(
-              'absolute right-0 top-1/2 -translate-y-1/2 rounded-md p-2 transition-colors sm:hidden',
-              lightText ? 'text-white hover:bg-white/15' : 'text-green-700 hover:bg-green-50',
-            )}
-          >
-            <MenuIcon open={open} />
-          </button>
         </nav>
-
-        {open && (
-          <ul className="mb-4 flex flex-col gap-1 rounded-lg border border-white/70 bg-white/90 p-3 backdrop-blur-md sm:hidden">
-            {NAV_LINKS.map((link) => (
-              <li key={link.path}>
-                <NavLink
-                  to={link.path}
-                  end={link.path === '/'}
-                  onClick={() => setOpen(false)}
-                  className={({ isActive }) =>
-                    cn(
-                      'block rounded-sm px-3 py-2 text-sm font-medium transition-colors',
-                      isActive ? 'text-green-800' : 'text-neutral-600 hover:text-green-700',
-                    )
-                  }
-                >
-                  {link.label}
-                </NavLink>
-              </li>
-            ))}
-          </ul>
-        )}
       </PageContainer>
     </header>
   )
@@ -153,7 +119,7 @@ export function NavBar({ overlay = false }: NavBarProps) {
 /** Active state is an underline rather than a filled pill - there is often no fill to sit on. */
 function navLinkClasses(isActive: boolean, lightText: boolean) {
   return cn(
-    'rounded-sm text-sm transition-colors',
+    'whitespace-nowrap rounded-sm text-xs transition-colors sm:text-sm',
     isActive && 'font-semibold underline decoration-2 underline-offset-8',
     lightText
       ? isActive
@@ -162,32 +128,5 @@ function navLinkClasses(isActive: boolean, lightText: boolean) {
       : isActive
         ? 'text-green-900 decoration-green-500'
         : 'font-medium text-neutral-600 hover:text-green-700',
-  )
-}
-
-function MenuIcon({ open }: { open: boolean }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-      className="h-5 w-5"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-    >
-      {open ? (
-        <>
-          <path d="M6 6l12 12" />
-          <path d="M18 6L6 18" />
-        </>
-      ) : (
-        <>
-          <path d="M4 7h16" />
-          <path d="M4 12h16" />
-          <path d="M4 17h16" />
-        </>
-      )}
-    </svg>
   )
 }

@@ -5,6 +5,22 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+
+    /*
+      Hide the scrollbar. Scrolling itself is untouched - wheel, trackpad, touch, keyboard
+      and anchor links all still work, and the reclaimed gutter means no layout shift when
+      a page grows past one screen.
+
+      The trade-off is that the page loses its only visual cue that there is more below, so
+      keep the content itself suggesting it: the hero runs to 86vh precisely so the next
+      section peeks above the fold.
+    */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* legacy Edge */
+  }
+
+  html::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
   }
 
   body {

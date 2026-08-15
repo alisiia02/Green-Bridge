@@ -65,7 +65,9 @@ export function Hero({
 
   return (
     <section className={cn('relative isolate', className)}>
-      <div ref={ref} className="relative h-[86vh] min-h-[560px] overflow-hidden">
+      {/* min-height keeps the banner usable on short landscape phones, where 86vh is barely
+          taller than the header. */}
+      <div ref={ref} className="relative h-[86vh] min-h-[440px] overflow-hidden sm:min-h-[560px]">
         {/* Layer is 160% tall starting at -30%, giving exactly the overscan the drift needs. */}
         <div
           className="absolute inset-x-0 -top-[30%] h-[160%] will-change-transform"
@@ -95,7 +97,7 @@ export function Hero({
           {eyebrow && <Eyebrow className="text-green-200">{eyebrow}</Eyebrow>}
 
           <h1 className="will-change-transform" style={{ transform: logoTransform }}>
-            <Logo withText light alt={title} className="h-28 w-auto md:h-40" />
+            <Logo withText light alt={title} className="h-24 w-auto sm:h-28 md:h-40" />
           </h1>
 
           <p className="max-w-xl text-lg leading-relaxed text-green-50/90">{description}</p>
