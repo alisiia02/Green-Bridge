@@ -90,15 +90,22 @@ the site is a static build and never calls the API, so no server is running.
 
 ### First-time setup
 
-In the Cloudflare dashboard: **Workers & Pages → Create → Pages → Connect to Git**, pick
-this repo, then:
+In the Cloudflare dashboard: **Workers & Pages → Create → Connect to Git**, pick this repo,
+then:
 
 | Setting | Value |
 | --- | --- |
-| Framework preset | None |
 | **Root directory** | **`frontend`** |
 | Build command | `npm run build` |
-| Build output directory | `dist` |
+| Deploy command | `npx wrangler deploy` |
+
+What gets deployed is described by **`frontend/wrangler.jsonc`**: an assets-only Worker with
+no `main`, because nothing runs on the server. It points at `./dist` and sets
+`not_found_handling: "single-page-application"`, which is what makes deep links work.
+
+*(If you use the older **Pages** flow instead, there is no deploy command — set the build
+output directory to `dist` and `public/_redirects` handles the routing rather than
+`wrangler.jsonc`.)*
 
 **The root directory matters.** Point Cloudflare at the repo root and the build fails with
 *"application detection logic has been run in the root of a workspace instead of targeting a
@@ -123,7 +130,9 @@ unaffected by the root-directory setting above:
 
 - **`_redirects`** — serves `index.html` for every path. The app uses history-based routing,
   so `/patterns` is not a real file; without this, opening or refreshing any URL other than
-  `/` returns Cloudflare's 404 and the app never boots. Delete it and direct links break.
+  `/` returns Cloudflare's 404 and the app never boots. This is the **Pages** mechanism; on
+  Workers the same job is done by `not_found_handling` in `wrangler.jsonc`. Both are kept so
+  the site works whichever flow deploys it.
 - **`_headers`** — caches the fingerprinted `/assets/*` for a year and forbids caching
   `index.html`, so a new build is picked up immediately instead of serving stale asset URLs.
 

@@ -1,0 +1,24 @@
+{
+  // Cloudflare Workers config for the static site.
+  //
+  // There is no Worker code here - no "main" entry - because nothing runs on the server.
+  // This is an assets-only Worker: it uploads the Vite build and serves it.
+  //
+  // Used by `npx wrangler deploy`, which Cloudflare Builds runs with the project's root
+  // directory set to `frontend`, so the paths below are relative to that.
+  "name": "green-bridge",
+  "compatibility_date": "2026-01-01",
+
+  "assets": {
+    "directory": "./dist",
+
+    // The app uses history-based routing, so /patterns is not a real file. Without this,
+    // opening or refreshing any URL other than / returns Cloudflare's own 404 and the app
+    // never boots - which also means our 404 page never gets a chance to render.
+    //
+    // This is the Workers equivalent of the `/* /index.html 200` rule in public/_redirects.
+    // That file is kept for the Pages flow, which ignores this setting; whichever platform
+    // ends up serving the site, one of the two applies.
+    "not_found_handling": "single-page-application"
+  }
+}
