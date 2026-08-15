@@ -268,12 +268,16 @@ Three measurements hold this together. Change the arch height and all three move
 | Concern | Rule |
 | --- | --- |
 | Middle link is centred | Side links get `flex-1` **equal-width slots**. Centring the row is not enough — the links differ in width, which shifts the middle one off the centre line and away from the arch. |
-| Arch clears its neighbours | The middle link reserves `px-28` (`md:px-32`). At `h-32` the arch is 276px wide against a ~62px word, so it overhangs by ~107px each side. |
-| Label sits in the opening | The arch anchors to `top-0` and is taller than the row; the row uses `items-end pb-4`. The opening's centre is ~⅔ down the artwork, which puts both at ~85px from the row top. |
+| Arch clears its neighbours | The middle link reserves `px-20` (`md:px-24`). At `h-24` the arch is 207px wide against a ~62px word, so it overhangs by ~73px each side. |
+| Label sits in the opening | The row is a standard `h-20` with `items-center`, so the label centres at 40px. The arch is bigger than the row (`h-24`) and pulled up (`-top-3`), which crosses the row at the arch's widest rather than near its apex — the label clears the inner curve by ~8px. |
 
-The row is `overflow-hidden` so the legs crop at the header edge. The arch's centring
-translate and its handoff scale share one `transform`, so both live in the inline style — a
-class-based `-translate-x-1/2` would be overwritten by the scale — with
+The row is `overflow-hidden`, so both ends of the arch crop: ~12px of leaf at the top and
+~4px of leg at the bottom. That top crop is the cost of a standard-height row — the arch has
+to ride up for its opening to be wide enough where a vertically centred label sits. A taller
+row would keep the leaves whole.
+
+The arch's centring translate and its handoff scale share one `transform`, so both live in
+the inline style — a class-based `-translate-x-1/2` would be overwritten by the scale — with
 `transform-origin: top center` so scaling does not drag it off its anchor.
 
 The layout assumes an **odd** number of links, so the middle one has equal counts either

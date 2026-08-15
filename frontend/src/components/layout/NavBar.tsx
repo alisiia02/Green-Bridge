@@ -55,18 +55,20 @@ export function NavBar({ overlay = false }: NavBarProps) {
       <PageContainer>
         {/* One row, with the arch spanning the middle link - Patterns, see
             constants/nav.ts. overflow-hidden crops the arch legs at the header edge. */}
-        <nav className="relative h-28 overflow-hidden">
+        <nav className="relative h-20 overflow-hidden">
           {/*
             Decorative: the arch frames the middle link rather than acting as a control.
             It sits behind the links and takes no pointer events, so the link it spans
             stays clickable - its box is far wider than the word it arches over.
 
-            Anchored to the top and taller than the row, so the legs run off the bottom.
-            transform-origin keeps that top edge put while the handoff scales it.
+            Taller than the row and pulled up past its top edge, so the arch crosses the
+            row at its widest rather than at the apex - that is what clears the label,
+            which is centred on a standard-height row. Both edges crop.
+            transform-origin keeps the top edge put while the handoff scales it.
           */}
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute left-1/2 top-0 z-0"
+            className="pointer-events-none absolute -top-3 left-1/2 z-0"
             style={{
               opacity: markOpacity,
               // Centring and the handoff scale share one transform, so a class-based
@@ -75,14 +77,10 @@ export function NavBar({ overlay = false }: NavBarProps) {
               transformOrigin: 'top center',
             }}
           >
-            <Logo light={lightText} alt="" className="h-32 w-auto" />
+            <Logo light={lightText} alt="" className="h-24 w-auto" />
           </span>
 
-          {/*
-            items-end plus the bottom padding drops the labels into the arch opening,
-            whose centre sits about two thirds of the way down the artwork.
-          */}
-          <ul className="relative z-10 hidden h-full w-full items-end gap-6 pb-4 sm:flex">
+          <ul className="relative z-10 hidden h-full w-full items-center gap-6 sm:flex">
             {NAV_LINKS.map((link, index) => (
               <li
                 key={link.path}
@@ -90,7 +88,7 @@ export function NavBar({ overlay = false }: NavBarProps) {
                   index === ARCH_INDEX
                     ? // Reserves the width the arch needs, or its legs land on the
                       // neighbouring links.
-                      'shrink-0 px-28 text-center md:px-32'
+                      'shrink-0 px-20 text-center md:px-24'
                     : // Equal-width slots either side. Centring the row is not enough:
                       // the links differ in width, which shifts the middle one off centre
                       // and away from the arch.
