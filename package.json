@@ -11,7 +11,8 @@
     "dev": "concurrently -n web,api -c green,cyan \"vite --config frontend/vite.config.ts\" \"tsx watch backend/src/server.ts\"",
     "dev:web": "vite --config frontend/vite.config.ts",
     "dev:api": "tsx watch backend/src/server.ts",
-    "build": "cd frontend && tsc --noEmit && vite build && cd ../backend && tsc"
+    "build": "cd frontend && tsc --noEmit && vite build && cd ../backend && tsc",
+    "build:web": "cd frontend && tsc --noEmit && vite build"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

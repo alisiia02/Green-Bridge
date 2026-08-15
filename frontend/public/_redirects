@@ -1,0 +1,11 @@
+# Single-page-app fallback for Cloudflare Pages.
+#
+# The site uses history-based routing, so paths like /patterns exist only inside React
+# Router - there is no file at that path to serve. Without this rule, opening or refreshing
+# any URL other than / returns Cloudflare's own 404 and the app never boots, which also
+# means our own 404 page never renders.
+#
+# 200 rewrites rather than redirects: the browser keeps the URL it asked for, and React
+# Router decides what to show. Real files (/assets/*) are matched first, so this does not
+# shadow the build output.
+/*    /index.html   200

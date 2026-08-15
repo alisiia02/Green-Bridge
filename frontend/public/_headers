@@ -1,0 +1,11 @@
+# Response headers for Cloudflare Pages.
+
+# Vite fingerprints everything in /assets with a content hash, so a given URL can never
+# change contents. Cache it for a year - a new build produces new filenames, so visitors
+# pick changes up immediately rather than waiting for a cache to expire.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# index.html must not be cached, or browsers keep loading the old build's asset URLs.
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
