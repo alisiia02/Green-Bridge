@@ -258,16 +258,27 @@ by route in `Layout`:
 | `overlay` | Pages opening on a hero (`/`) | `fixed` | Transparent, white text, mark hidden | Fill, dark text, mark shown |
 | default | Everything else | `sticky` | Transparent, dark text | Fill, dark text |
 
-One row. The links are centred as a group and the **logo is layered over the middle of that
-row**, absolutely positioned on the centre line. `NAV_LINKS` is ordered so **Patterns** is
-the middle entry, which is what the logo sits over. The logo carries no padding of its own;
-the row height is its only constraint.
+One row, with the **bridge arch spanning the middle link** — `NAV_LINKS` is ordered so
+**Patterns** is that middle entry. The arch is decorative: `aria-hidden`, no pointer
+events, and behind the links, because its box is far wider than the word it arches over and
+would otherwise swallow clicks meant for that link.
 
-Its centring translate and its handoff scale share a single `transform`, so both live in
-the inline style — a class-based `-translate-x-1/2` would be overwritten by the scale.
+Three measurements hold this together. Change the arch height and all three move:
 
-The active link is underlined rather than filled, since there is often no fill for a pill
-to sit on.
+| Concern | Rule |
+| --- | --- |
+| Middle link is centred | Side links get `flex-1` **equal-width slots**. Centring the row is not enough — the links differ in width, which shifts the middle one off the centre line and away from the arch. |
+| Arch clears its neighbours | The middle link reserves `px-28` (`md:px-32`). At `h-32` the arch is 276px wide against a ~62px word, so it overhangs by ~107px each side. |
+| Label sits in the opening | The arch anchors to `top-0` and is taller than the row; the row uses `items-end pb-4`. The opening's centre is ~⅔ down the artwork, which puts both at ~85px from the row top. |
+
+The row is `overflow-hidden` so the legs crop at the header edge. The arch's centring
+translate and its handoff scale share one `transform`, so both live in the inline style — a
+class-based `-translate-x-1/2` would be overwritten by the scale — with
+`transform-origin: top center` so scaling does not drag it off its anchor.
+
+The layout assumes an **odd** number of links, so the middle one has equal counts either
+side. The active link is underlined rather than filled, since there is often no fill for a
+pill to sit on.
 
 ### Logo handoff
 

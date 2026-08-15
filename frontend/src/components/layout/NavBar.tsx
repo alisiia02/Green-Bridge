@@ -15,7 +15,13 @@ interface NavBarProps {
   overlay?: boolean
 }
 
-/** Index of the link the arch frames. Middle of three. */
+/**
+ * Index of the link the arch frames.
+ *
+ * The layout assumes an odd number of links, so that this one is the true middle with
+ * equal counts either side. An even number would sit off centre and pull away from the
+ * arch; group the extras rather than letting the slots go uneven.
+ */
 const ARCH_INDEX = Math.floor(NAV_LINKS.length / 2)
 
 /**
@@ -47,34 +53,51 @@ export function NavBar({ overlay = false }: NavBarProps) {
       )}
     >
       <PageContainer>
-        {/* One row. Links centred as a group, with the arch framing the middle one -
-            Patterns, see constants/nav.ts. */}
-        <nav className="relative flex h-24 items-center justify-center">
+        {/* One row, with the arch spanning the middle link - Patterns, see
+            constants/nav.ts. overflow-hidden crops the arch legs at the header edge. */}
+        <nav className="relative h-28 overflow-hidden">
           {/*
             Decorative: the arch frames the middle link rather than acting as a control.
             It sits behind the links and takes no pointer events, so the link it spans
             stays clickable - its box is far wider than the word it arches over.
+
+            Anchored to the top and taller than the row, so the legs run off the bottom.
+            transform-origin keeps that top edge put while the handoff scales it.
           */}
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute left-1/2 top-1/2 z-0"
+            className="pointer-events-none absolute left-1/2 top-0 z-0"
             style={{
               opacity: markOpacity,
               // Centring and the handoff scale share one transform, so a class-based
               // -translate-x-1/2 would be overwritten - both live here instead.
-              transform: `translate(-50%, -50%) scale(${0.85 + 0.15 * markOpacity})`,
+              transform: `translateX(-50%) scale(${0.85 + 0.15 * markOpacity})`,
+              transformOrigin: 'top center',
             }}
           >
-            <Logo light={lightText} alt="" className="h-20 w-auto" />
+            <Logo light={lightText} alt="" className="h-32 w-auto" />
           </span>
 
-          <ul className="relative z-10 hidden items-center gap-6 sm:flex">
+          {/*
+            items-end plus the bottom padding drops the labels into the arch opening,
+            whose centre sits about two thirds of the way down the artwork.
+          */}
+          <ul className="relative z-10 hidden h-full w-full items-end gap-6 pb-4 sm:flex">
             {NAV_LINKS.map((link, index) => (
               <li
                 key={link.path}
-                // The middle link is the one the arch spans, so it reserves the width the
-                // arch needs. Without this the arch legs land on its neighbours.
-                className={cn(index === ARCH_INDEX && 'px-16 md:px-20')}
+                className={cn(
+                  index === ARCH_INDEX
+                    ? // Reserves the width the arch needs, or its legs land on the
+                      // neighbouring links.
+                      'shrink-0 px-28 text-center md:px-32'
+                    : // Equal-width slots either side. Centring the row is not enough:
+                      // the links differ in width, which shifts the middle one off centre
+                      // and away from the arch.
+                      index < ARCH_INDEX
+                      ? 'flex-1 text-right'
+                      : 'flex-1 text-left',
+                )}
               >
                 <NavLink
                   to={link.path}
