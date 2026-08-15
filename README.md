@@ -96,11 +96,18 @@ this repo, then:
 | Setting | Value |
 | --- | --- |
 | Framework preset | None |
-| Build command | `npm run build:web` |
-| Build output directory | `frontend/dist` |
-| Root directory | *(leave as the repo root)* |
+| **Root directory** | **`frontend`** |
+| Build command | `npm run build` |
+| Build output directory | `dist` |
 
-Node version comes from `.node-version`, so it does not need setting in the dashboard.
+**The root directory matters.** Point Cloudflare at the repo root and the build fails with
+*"application detection logic has been run in the root of a workspace instead of targeting a
+specific project"* — this repo is an npm workspaces monorepo, and the detection will not run
+at a workspace root. Targeting `frontend` gives it a plain Vite app. Every other path in
+this table is then relative to `frontend`, which is why they are shorter than they look.
+
+`frontend/package.json` declares all of its own dependencies, so it installs and builds on
+its own without the workspace root. Node version comes from `.node-version`.
 
 Then **Custom domains → Set up a domain** and add `greenbridge-honours.com`. Because the
 domain's DNS is already on Cloudflare, the record and the HTTPS certificate are created for
@@ -111,7 +118,8 @@ URL.
 
 ### Two files that make it work
 
-Both live in `frontend/public/`, which Vite copies to the build output as-is:
+Both live in `frontend/public/`, which Vite copies to the build output as-is, so they are
+unaffected by the root-directory setting above:
 
 - **`_redirects`** — serves `index.html` for every path. The app uses history-based routing,
   so `/patterns` is not a real file; without this, opening or refreshing any URL other than
